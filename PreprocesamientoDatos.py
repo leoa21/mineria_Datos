@@ -10,6 +10,3 @@ df.columns = columnas
 
 df['Fecha'] = pd.to_datetime(df['Fecha'])
 
-df.info()
-
-print(df)
