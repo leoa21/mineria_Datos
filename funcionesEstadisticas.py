@@ -1,37 +1,79 @@
+#Estadistica Descriptiva
+
 import pandas as pd
 
-df = pd.read_csv('csv/results.csv')
+df = pd.read_csv('csv/torneos_oficiales.csv')
+goles = pd.read_csv('csv/goles.csv')
 
-#Cambiando el nombre a las columnas
-columnas = ['Fecha', 'Local', 'Visitante', 'Goles_Local',
-            'Goles_Visitantes', 'Torneo', 'Ciudad', 'Pais', 'Neutral']
+df.drop(['Unnamed: 0'], axis=1, inplace=True)
+df.drop(['Neutral'], axis = 1, inplace=True)
+goles.drop(['Unnamed: 0'], axis=1, inplace=True)
 
-df.columns = columnas
-
-df['Fecha'] = pd.to_datetime(df['Fecha'])
-
-#Acotamos el dataframe solamente a ciertos torneros
-df1 = df[(df['Torneo'] == 'UEFA Nations League') | (df['Torneo'] == 'CONCACAF Nations League League') | (df['Torneo'] == 'Confederations Cup') | (df['Torneo'] == 'Gold Cup') | (df['Torneo'] == 'Oceania Nations Cup') | (
-    df['Torneo'] == 'UEFA Euro') | (df['Torneo'] == 'African Cup of Nations') | (df['Torneo'] == 'FIFA World Cup qualification') | (df['Torneo'] == 'FIFA World Cup') | (df['Torneo'] == 'Copa América')]
-lista = [i for i in range(1, 11856)]
-df1.index = lista
-
-print(df1.describe())
+print(df.describe())
 
 #Mediana
-print("\nMediana:\n",  df1.median(numeric_only=True))
+print("\nMediana:\n",  df.median(numeric_only=True))
 
 #Moda
-print(f"\nModa goles local: {df1['Goles_Local'].mode()[0] }")
-print(f"Moda goles visitante: {df1['Goles_Visitantes'].mode()[0]}")
-print(f"Moda equipo local: {df1['Local'].mode()[0]}")
-print(f"Moda equipo visitante: {df1['Visitante'].mode()[0]}")
+print(f"\nMaxima cantidad de goles de un equipolocal: {df['Goles_Local'].max()}")
+print(f"Maxima cantidad de goles del equipo visitante: {df['Goles_Visitantes'].max()}")
+print(f"El equipo local que más se repita: {df['Local'].mode()[0]}")
+print(f"El equipo visitante que más se repite: {df['Visitante'].mode()[0]}")
 
-print("\nPromedio de goles de la seleccion de Brasil en los mundiales que ha participado:\n", df1[(df1['Torneo'] == 'FIFA World Cup')].mean(numeric_only= True))
+print("\nPromedio de goles de la seleccion de Brasil en torneos oficales:\n",
+      df[(df['Local'] == 'Brazil')].mean(numeric_only=True))
 
-print("\nCantidad de goles que ha anotado diferentes selecciones en los torneos oficiales que han participado:\n", df1.groupby(['Local', 'Torneo']).sum(numeric_only=True))
+print("\nCantidad de goles que ha anotado diferentes selecciones en los torneos oficiales que han participado:\n",
+      df.groupby(['Local', 'Torneo']).sum(numeric_only=True))
 
-df2 = df1[(df1['Torneo'] == 'FIFA World Cup')]
+df1 = df[(df['Torneo'] == 'FIFA World Cup')]
 
 print("\nPromedio de goles realizados en los mundiales desde 1939 - 2022 por las diferentes selecciones que han participado:\n",
-      df2.groupby(['Local']).mean(numeric_only = True))
+      df1.groupby(['Local']).mean(numeric_only=True))
+
+#Concatenando los goles anotados con los juegos realizados 
+inner = pd.merge(df, goles, on=['Fecha', 'Local', 'Visitante'], how='left')
+
+#Acotando solamente a los juegos del mundial
+world_cup = inner[inner['Torneo'] == 'FIFA World Cup']
+
+#Máximo anotador en la historia de los mundiales
+max_goleador_mundiales = world_cup['Anotador'].value_counts()
+print("Maximo goleador en la historia de los mundiales:", max_goleador_mundiales.head(1))
+
+#TOP 3 
+print("\nMaximos goleadores en la historia de los mundiales\n",
+      max_goleador_mundiales.head(5))
+
+copa_america = inner[inner['Torneo'] == 'Copa América']
+
+
+#Máximo anotador en la historia de la Copa América
+print("")
+max_goleador_copaAmerica = copa_america['Anotador'].value_counts()
+print("Maximo goleador en la historia de la Copa América:",
+      max_goleador_copaAmerica.head(1))
+
+#TOP 5
+print("\nMaximos goleadores en la historia de la Copa América\n",
+      max_goleador_copaAmerica.head(5))
+
+gold_cup = inner[inner['Torneo'] == 'Gold Cup']
+
+#Máximo anotador en la historia de la golden cup
+max_goleador_goldCup = gold_cup['Anotador'].value_counts()
+print("")
+print("Maximo goleador en la historia de la Gold Cup:",
+      max_goleador_goldCup.head(1))
+
+#TOP 5
+print("\nMaximos goleadores en la historia de la Gold Cup\n",
+      max_goleador_goldCup.head(5))
+
+print("")
+#Autogoles
+autogoles = inner[inner['Autogol'] == True]
+max_equipo_autogoles = autogoles['Equipo'].value_counts()
+print("Las tres selecciones con mas goles en propia puerta en torneos oficiales\n", max_equipo_autogoles.head(3))
+
+
