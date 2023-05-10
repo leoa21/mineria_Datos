@@ -21,9 +21,8 @@ goals.columns = columnas_goles
 goals['Fecha'] = pd.to_datetime(goals['Fecha'])
 
 #Acotamos el dataframe para que solo nos muestre los torneos avalados por la FIFA
-df1 = df[(df['Torneo'] == 'UEFA Nations League') | (df['Torneo'] == 'CONCACAF Nations League League') | (df['Torneo'] == 'Confederations Cup') | (df['Torneo'] == 'Gold Cup') | (df['Torneo'] == 'Oceania Nations Cup') | (
-    df['Torneo'] == 'UEFA Euro') | (df['Torneo'] == 'African Cup of Nations') | (df['Torneo'] == 'FIFA World Cup qualification') | (df['Torneo'] == 'FIFA World Cup') | (df['Torneo'] == 'Copa América')]
-lista = [i for i in range(1, 11856)]
+df1 = df[(df['Torneo'] == 'UEFA Nations League') | (df['Torneo'] == 'CONCACAF Nations League League') | (df['Torneo'] == 'Confederations Cup') | (df['Torneo'] == 'Gold Cup') | (df['Torneo'] == 'Oceania Nations Cup') | (df['Torneo'] == 'UEFA Euro') | (df['Torneo'] == 'African Cup of Nations') | (df['Torneo'] == 'FIFA World Cup qualification') | (df['Torneo'] == 'FIFA World Cup') | (df['Torneo'] == 'Copa América')]
+lista = [i for i in range(1, len(df1)+1)]
 df1.index = lista
 
 print(df1)
