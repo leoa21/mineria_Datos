@@ -1,4 +1,4 @@
-#Practica 3
+#Practica 4
 
 #Se tienen los datos de los goles anotados por la seleccion de brasil durante los primeros 45min de partido desde 1930 hasta 2022.
 #Verificar si los datos siguen una distribucion normal utilizando la prueba de la chi cuadrada con un alpha de 0.05
